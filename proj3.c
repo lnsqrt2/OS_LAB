@@ -36,11 +36,22 @@ union semun
 int main(void)
 {
 	int i;
+	int flag = 0;
 	int semid;
 	int shmid[6];
 	int readbuf,writebuf;
 	char *s;
-	char file[]="ThePeacocksruledovertheGongmencityaaaaaaaaaaaaaaaaaa";
+	char ch;
+	FILE *fp1;
+	FILE *fp2;
+	if((fp1=fopen("text3.txt","r"))==NULL)
+	{
+		printf("fail\n");
+	}
+	if((fp2=fopen("test.txt","w"))==NULL)
+	{
+		printf("fail\n");
+	}
 	//创建共享内存组；
 	for(i=0;i<6;i++)
 	{
@@ -56,10 +67,13 @@ int main(void)
 	//创建两个进程readbuf、writebuf;
 	if ((readbuf=fork()) == 0)
 	{
-		for(int i=0;i<30;i++)
+		//while (flag == 0)
+		for(i=0;i<47;i++)
 		{
 			P(semid,0);
 			s=(char *)shmat(shmid[i%6],NULL,0);
+			fputc(*s,fp2);
+
 			printf("readbuf %c\n",*s);
 			shmdt(s);
 			V(semid,1);
@@ -68,15 +82,17 @@ int main(void)
 	}
 	else if ((writebuf=fork()) == 0)
 	{
-		for(int i=0;i<30;i++)
+		while ((ch=fgetc(fp1))!=EOF)
 		{
-			sleep(1);
+			//sleep(1);
 			P(semid,1);
 			s=(char *)shmat(shmid[i%6],NULL,0);
-			*s=file[i];
-			printf("writebuf %c\n",file[i]);
+			*s=ch;
+			
+			printf("writebuf %c\n",ch);
 			shmdt(s);
 			V(semid,0);
+			i++;
 		}
 	}
 	//等待两个进程运行结束；
@@ -90,6 +106,8 @@ int main(void)
 	{
 		shmctl(shmid[i],IPC_RMID,0);
 	}
+	fclose(fp1);
+	fclose(fp2);
 	return 0;
 }
 
