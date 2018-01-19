@@ -6,7 +6,7 @@
 #include <semaphore.h> 
 
 int semid;
-int a=1;
+int a=0;
 pthread_t p1,p2;
 
 void P(int semid,int index)
@@ -31,7 +31,7 @@ void V(int semid,int index)
 
 void *subp1()
 {
-	for(i=0;i<100;i++)
+	for(int i=1;i<=100;i++)
 	{
 		P(semid,0);
 		printf("%d\n",a);//´òÓ¡;
@@ -42,7 +42,7 @@ void *subp1()
 
 void *subp2()
 {
-	for(int i=0;i<100;i++)
+	for(int i=1;i<=100;i++)
 	{
 		P(semid,1);
 		a=a+i;
