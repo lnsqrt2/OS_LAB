@@ -4,6 +4,7 @@
 int main(int argc, char const *argv[])
 {
 	char buffer[N]={0};
+	int n;
 	FILE *fpRead;
 	FILE *fpWrite;
 	if((fpRead=fopen("FileRead.txt","r"))==NULL)
@@ -11,23 +12,17 @@ int main(int argc, char const *argv[])
 		printf("Fail!Can't open file\n");
 		return 0;
 	}
-	if((fpWrite=fopen("FileRead.txt","w"))==NULL)
+	if((fpWrite=fopen("FileWrite.txt","w"))==NULL)
 	{
 		printf("Fail!Can't open file\n");
 		fclose(fpRead);
 		return 0;
 	}
-	
-	while(1)
+	while((n=fread(buffer,1,N,fpRead)))
 	{
-		if (feof(fpRead))//read over
-		{
-			break;
-		}
-		fread(s,fpRead);
-		fwrite(s,fpWrite);
+		fwrite(buffer,1,n,fpRead);
 	}
 	fclose(fpRead);
-	fclose(fwrite);
+	fclose(fpWrite);
 	return 0;
 }
