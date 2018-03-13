@@ -36,11 +36,14 @@ int main(void)
 		{
 			break;
 		}
-		w_re = write(w_fp,&buffer,sizeof(char));
-		if(r_re == -1)
+		if(r_re == 1)
 		{
-			printf("Fail!Can't write file\n");
-			return 0;
+			w_re = write(w_fp,&buffer,sizeof(char));
+			if(r_re == -1)
+			{
+				printf("Fail!Can't write file\n");
+				return 0;
+			}
 		}
 	}
 	close(r_fp);
