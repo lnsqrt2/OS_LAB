@@ -12,17 +12,10 @@
 #include <time.h>
 #include <glib.h>
 
-// void gettime(gpointer data)
-// {
-// 	time_t mytime;
-// 	struct tm *time_tm;//具体时间项
-// 	time(&mytime);
-// 	//获取当前时间
-// 	time_tm = localtime(&mytime);
-// 	gchar *dis_time = g_strdup_printf("%d:%d:%d",(time_tm->tm_hour), (time_tm->tm_min), (time_tm->tm_sec));
-// 	gtk_label_set_markup(GTK_LABEL(data), dis_time);
-// }
-gboolean gettime(gpointer data)
+gint count = 0;
+char buf[5];
+
+gboolean getTime(gpointer data)
 {
     time_t Mytime;
     time(&Mytime);
@@ -54,12 +47,41 @@ void init_time(int argc, char const *argv[])
     //把标签绑定到窗口
     gtk_container_add(GTK_CONTAINER(window),label);
 
-    gint s = g_timeout_add(1000,gettime,(void *)label);
+    gint s = g_timeout_add(1000,getTime,(void *)label);
 
     //显示所有窗口
     gtk_widget_show_all(window);
     gtk_main();
 }
+
+// gboolean getCpuRatio(gpointer data)
+// {
+// 	FILE *fp;
+// 	char buffer[1024];
+// 	size_t buf;
+// 	float CpuRatio,CpuTime;
+// 	float user = 0, nice = 0, sys = 0, idle = 0, iowait = 0;
+
+// 	fp = fopen("/proc/stat", "r");
+// 	fputc(user,fp2);
+// 	buf = fread(buffer, 1, sizeof(buffer), fp);
+// 	fclose(fp);
+
+// 	if (buf == 0)
+// 		return 0;
+// 	buffer[buf] == '\0';
+// 	sscanf(buffer, "%f %f %f %f %f", &user, &nice, &sys, &idle, &iowait);
+// 	if (idle <= 0)
+// 		idle = 0;
+// 	CpuTime = user + nice + sys + idle + iowait;
+// 	CpuRatio = 100*(CpuTime-idle)/CpuTime;
+// 	if (CpuRatio > 100)
+// 		CpuRatio = 100;
+
+// 	gchar *cpu_dis = g_strdup_printf("CPU use radio: %.2f%",CpuRatio);
+// 	gtk_label_set_markup(GTK_LABEL(data), cpu_dis);
+//     return TRUE;
+// }
 
 void init_cpu(int argc, char const *argv[])
 {
@@ -69,6 +91,8 @@ void init_cpu(int argc, char const *argv[])
     gtk_init(&argc,&argv);
     //创建窗口
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    //标签实例化
+    label = gtk_label_new (NULL);
     //设置标题
     gtk_window_set_title(GTK_WINDOW(window),"CPU");
     //设置窗口宽度
@@ -77,13 +101,22 @@ void init_cpu(int argc, char const *argv[])
     gtk_window_set_default_size(GTK_WINDOW(window), 250, 350);
     //关闭事件
     g_signal_connect(window,"destroy",G_CALLBACK(gtk_main_quit),NULL);
-
-    label = gtk_label_new("NO2");
+    //把标签绑定到窗口
     gtk_container_add(GTK_CONTAINER(window),label);
+
+    gint s = g_timeout_add(1000,getTime,(void *)label);
 
     //显示所有窗口
     gtk_widget_show_all(window);
     gtk_main();
+}
+
+gboolean getAdd(gpointer data)
+{
+    count++;
+    sprintf(buf,"%d",count);
+    gtk_label_set_markup(GTK_LABEL(data), buf);
+    return TRUE;
 }
 
 void init_add(int argc, char const *argv[])
@@ -94,17 +127,22 @@ void init_add(int argc, char const *argv[])
     gtk_init(&argc,&argv);
     //创建窗口
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    //标签实例化
+    label = gtk_label_new (NULL);
     //设置标题
-    gtk_window_set_title(GTK_WINDOW(window),"ADD");
+    gtk_window_set_title(GTK_WINDOW(window),"ADD_MAIN");
     //设置窗口宽度
     gtk_container_set_border_width(GTK_CONTAINER(window), 0);
     //设置窗口大小
     gtk_window_set_default_size(GTK_WINDOW(window), 250, 350);
     //关闭事件
     g_signal_connect(window,"destroy",G_CALLBACK(gtk_main_quit),NULL);
-
-    label = gtk_label_new("NO2");
+    //把标签绑定到窗口
     gtk_container_add(GTK_CONTAINER(window),label);
+
+    gint s = g_timeout_add(1000,getAdd,(void *)label);
+
+    
 
     //显示所有窗口
     gtk_widget_show_all(window);
