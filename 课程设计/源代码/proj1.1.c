@@ -1,31 +1,50 @@
-//编写一个C程序，用fread、fwrite等库函数实现文件拷贝功能
 #include <stdio.h>
-
-#define N 1024
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 int main(void)
 {
 	int n = 0;
-	char buffer[N]={0};
-	FILE *fpRead;
-	FILE *fpWrite;
-	if((fpRead=fopen("/home/lumos/FileRead.txt","r"))==NULL)
+	int r_fp, w_fp, r_re, w_re;
+	char buffer;
+
+	r_fp = open("/home/lumos/FileRead.txt",O_RDONLY);
+	if(r_fp == -1)
 	{
 		printf("Fail!Can't open file\n");
 		return 0;
 	}
-	if((fpWrite=fopen("/home/lumos/FileWrite.txt","w"))==NULL)
+
+	w_fp = open("/home/lumos/FileWrite.txt",O_WRONLY);
+	if(w_fp == -1)
 	{
 		printf("Fail!Can't open file\n");
-		fclose(fpRead);
 		return 0;
 	}
-	while((n=fread(buffer,sizeof(char),N,fpRead)))
+
+	while(1)
 	{
-		fwrite(buffer,sizeof(char),n,fpWrite);
+		r_re=read(r_fp,&buffer,sizeof(char));
+		if(r_re == -1)
+		{
+			printf("Fail!Can't read file\n");
+			return 0;
+		}
+		if(r_re == 0)//over
+		{
+			break;
+		}
+		w_re = write(w_fp,&buffer,sizeof(char));
+		if(r_re == -1)
+		{
+			printf("Fail!Can't write file\n");
+			return 0;
+		}
 	}
-	fclose(fpRead);
-	fclose(fpWrite);
+	close(r_fp);
+	close(w_fp);
 	printf("Success!\n");
 	return 0;
 }
