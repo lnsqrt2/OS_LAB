@@ -14,6 +14,8 @@
 
 gint count = 0;
 char buf[5];
+gint count1 = 100;
+char buf1[5];
 
 gboolean getTime(gpointer data)
 {
@@ -83,6 +85,14 @@ void init_time(int argc, char const *argv[])
 //     return TRUE;
 // }
 
+gboolean getDec(gpointer data)
+{
+    count1--;
+    sprintf(buf1,"%d",count1);
+    gtk_label_set_markup(GTK_LABEL(data), buf1);
+    return TRUE;
+}
+
 void init_cpu(int argc, char const *argv[])
 {
 	GtkWidget *window;
@@ -104,7 +114,7 @@ void init_cpu(int argc, char const *argv[])
     //把标签绑定到窗口
     gtk_container_add(GTK_CONTAINER(window),label);
 
-    gint s = g_timeout_add(1000,getTime,(void *)label);
+    gint s = g_timeout_add(1000,getDec,(void *)label);
 
     //显示所有窗口
     gtk_widget_show_all(window);
