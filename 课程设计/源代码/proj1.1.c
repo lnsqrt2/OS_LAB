@@ -16,8 +16,8 @@ int main(void)
 		printf("Fail!Can't open file\n");
 		return 0;
 	}
-
-	w_fp = open("/home/lumos/FileWrite.txt",O_WRONLY);
+	//if exit, then clear;else creat, can read&write
+	w_fp = open("/home/lumos/FileWrite.txt",O_WRONLY|O_CREAT|O_TRUNC,S_IRUSR|S_IWUSR);
 	if(w_fp == -1)
 	{
 		printf("Fail!Can't open file\n");
