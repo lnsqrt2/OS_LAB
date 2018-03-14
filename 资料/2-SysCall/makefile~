@@ -1,0 +1,9 @@
+CC = gcc
+all:
+	$(CC) test.c
+clean:
+	rm a.out
+
+
+
+
