@@ -3,8 +3,9 @@
 #include <linux/version.h>
 #include <linux/fs.h>
 #include <linux/init.h>
-#include <asm/uaccess.h>
+#include <linux/uaccess.h>
 #include <linux/device.h>
+#include <linux/sched.h>
 
 static int Devnumber;//设备驱动号
 static char message[128] = "The peacocks ruled the GONGMEN city.";
