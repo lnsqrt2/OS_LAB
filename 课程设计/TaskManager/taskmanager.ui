@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>673</width>
-    <height>494</height>
+    <width>669</width>
+    <height>602</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,10 +16,10 @@
   <widget class="QTabWidget" name="tabWidget">
    <property name="geometry">
     <rect>
-     <x>13</x>
-     <y>82</y>
-     <width>601</width>
-     <height>351</height>
+     <x>20</x>
+     <y>100</y>
+     <width>611</width>
+     <height>491</height>
     </rect>
    </property>
    <property name="tabShape">
@@ -35,10 +35,10 @@
     <widget class="QGroupBox" name="pc_group">
      <property name="geometry">
       <rect>
-       <x>30</x>
+       <x>20</x>
        <y>20</y>
        <width>491</width>
-       <height>151</height>
+       <height>201</height>
       </rect>
      </property>
      <property name="title">
@@ -114,7 +114,7 @@
        <rect>
         <x>190</x>
         <y>60</y>
-        <width>81</width>
+        <width>281</width>
         <height>18</height>
        </rect>
       </property>
@@ -127,7 +127,7 @@
        <rect>
         <x>190</x>
         <y>90</y>
-        <width>81</width>
+        <width>301</width>
         <height>18</height>
        </rect>
       </property>
@@ -140,7 +140,7 @@
        <rect>
         <x>190</x>
         <y>120</y>
-        <width>81</width>
+        <width>271</width>
         <height>18</height>
        </rect>
       </property>
@@ -152,8 +152,8 @@
     <widget class="QGroupBox" name="cpu_group">
      <property name="geometry">
       <rect>
-       <x>30</x>
-       <y>190</y>
+       <x>20</x>
+       <y>280</y>
        <width>491</width>
        <height>111</height>
       </rect>
@@ -276,8 +276,8 @@
     <widget class="QGroupBox" name="group_cpu">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>20</y>
+       <x>30</x>
+       <y>10</y>
        <width>521</width>
        <height>101</height>
       </rect>
@@ -341,8 +341,8 @@
     <widget class="QGroupBox" name="group_mem">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>130</y>
+       <x>20</x>
+       <y>120</y>
        <width>521</width>
        <height>131</height>
       </rect>
@@ -432,8 +432,8 @@
     <widget class="QGroupBox" name="group_swap">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>270</y>
+       <x>20</x>
+       <y>280</y>
        <width>521</width>
        <height>131</height>
       </rect>
@@ -543,8 +543,8 @@
   <widget class="QPushButton" name="button_off">
    <property name="geometry">
     <rect>
-     <x>540</x>
-     <y>450</y>
+     <x>510</x>
+     <y>80</y>
      <width>112</width>
      <height>34</height>
     </rect>
@@ -583,9 +583,9 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>50</y>
+     <y>40</y>
      <width>81</width>
-     <height>18</height>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">

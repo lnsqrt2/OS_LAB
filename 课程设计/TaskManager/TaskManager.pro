@@ -18,3 +18,5 @@ SOURCES += main.cpp\
 HEADERS  += taskmanager.h
 
 FORMS    += taskmanager.ui
+
+CONFIG += C++11
