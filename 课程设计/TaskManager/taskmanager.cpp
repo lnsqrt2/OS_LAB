@@ -11,13 +11,17 @@
 #include <QTimer>
 #include <QTabWidget>
 #include <QDateTime>
+#include <QDir>
 
 TaskManager::TaskManager(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TaskManager)
 {
     ui->setupUi(this);
+    ui->button_kill->setEnabled(false);
     show_info(1);//initial
+    show_info(2);//initial
+    item_num = 0;
     Timer = NULL;
     Timer = new QTimer(this);
     connect(Timer,&QTimer::timeout,this,&TaskManager::update_info);
@@ -128,6 +132,7 @@ void TaskManager::show_info(int tab_num)
 
         // (5)显示cpu的型号和主频大小
         // 功能(5)：/proc/cpuinfo
+        int pos = 0;
         file.setFileName("/proc/cpuinfo");
         if (!file.open(QIODevice::ReadOnly))
         {
@@ -141,25 +146,164 @@ void TaskManager::show_info(int tab_num)
             str5 = str5.simplified();
             if(str5 == NULL)
                 break;
-            int pos = str5.indexOf("model name");
+            pos = str5.indexOf("model name");//find model name
             if(pos!=-1)
             {
                 pos+=13;
                 cpu_name = QString(str5.mid(pos, str5.length()-13));
             }
-
-            else if(pos = str5.indexOf("vendor_id"),pos!=-1)
+            pos = str5.indexOf("cpu MHz");//find MHz
+            if(pos!=-1)
             {
-                pos+=12;
-                cpu_version = QString(str5.mid(pos, str5.length()-12));
+                pos+=10;
+                cpu_hz = QString(str5.mid(pos, str5.length()-10));
             }
-
         }
-
-
         file.close();
-        cpu_name = cpu_name +cpu_version;
+        cpu_hz = cpu_hz+" MHz";
         ui->label_cpu_name->setText(cpu_name);
+        ui->label_cpu_hz->setText(cpu_hz);
         //label_cpu_hz label_cpu_name label_pc_name label_boot_time label_run_time
     }   //label_pc_version
+
+    if(tab_num == 2)//process
+    {
+        // (7)显示系统所有进程的一些信息，包括pid，ppid(parent pid)，占用内存大小，优先级等等
+        // 功能(7)：/proc/(pid)/stat,
+        //               /proc/(pid)/statm
+        //R:runnign, S:sleeping (TASK_INTERRUPTIBLE), D:disk sleep (TASK_UNINTERRUPTIBLE), T: stopped, T:tracing stop,Z:zombie, X:dead
+        bool p_flag;
+        int start = 3;
+        int left, right;
+        ui->list_process->clear();
+        item_num = 0;
+        QDir my_dir("/proc");
+        QStringList p_List = my_dir.entryList();//all pid list
+        QString pid_list = p_List.join("\n");//插入分节符
+        QListWidgetItem *title = new QListWidgetItem(QString("NAME")    +"\t\t"+
+                                                     QString("PID")     +"\t"+
+                                                     QString("PPID")    +"\t"+
+                                                     QString("STAT")    +"\t"+
+                                                     QString("MEM")     +"\t"+
+                                                     QString("优先级"), ui->list_process);
+        while(1)
+        {
+            left = pid_list.indexOf("\n", start);
+            right = pid_list.indexOf("\n", left+1);
+            pid = pid_list.mid(left+1, right-left-1);
+            pid.toInt(&p_flag);
+
+            if(!p_flag)
+                break;
+            else
+                start = right;
+
+            file.setFileName("/proc/" + pid + "/stat");
+            if (!file.open(QIODevice::ReadOnly))
+            {
+                QMessageBox::warning(this,"Warning","File open fail!", QMessageBox::Ok);
+                return;
+            }
+            QByteArray line7 = file.readLine();
+            QString str7 = (line7);
+            if (str7 ==  NULL)
+            {
+                break;
+            }
+            left = str7.indexOf("(");
+            right = str7.indexOf(")");
+            p_name = str7.mid(left+1, right-left-1);//in ()
+            p_name.simplified();
+            //qDebug()<<p_name;
+            p_stat = str7.section(" ", 2, 2);
+            ppid = str7.section(" ", 3, 3);
+            p_pri = str7.section(" ", 17, 17);
+            p_mem = str7.section(" ", 22, 22);
+            p_mem = QString::number(p_mem.toInt()/1024)+" K";
+            item_num++;
+            //qDebug()<<item_num;
+            if(p_name.length() >= 11 || p_name=="watchdog/0"|| p_name=="watchdog/1"|| p_name=="watchdog/2"|| p_name=="watchdog/3")
+                QListWidgetItem *item = new QListWidgetItem(p_name  + "\t" +
+                                                            pid     + "\t" +
+                                                            ppid    + "\t" +
+                                                            p_stat  + "\t" +
+                                                            p_mem   + "\t" +
+                                                            p_pri, ui->list_process);
+            else
+                QListWidgetItem *item = new QListWidgetItem(p_name  + "\t\t" +
+                                                            pid     + "\t" +
+                                                            ppid    + "\t" +
+                                                            p_stat  + "\t" +
+                                                            p_mem   + "\t" +
+                                                            p_pri, ui->list_process);
+        }
+        file.close();
+    }
 }
+
+
+
+// 功能(6)：/proc/(pid)/stat
+// (6)同过pid或者进程名查询一个进程，并显示该进程的详细信息，提供杀掉该进程的功能。
+void TaskManager::on_button_search_clicked()
+{
+    int row;
+    bool flag =false;
+    QString str6 = ui->edit_pid->text();
+    QString itemlist;
+    QStringList list;
+    show_info(2);
+    //qDebug()<<item_num;
+    for(row =1;row<=item_num;row++)
+    {
+        itemlist = ui->list_process->item(row)->text();
+        list = itemlist.split("\t");
+        if(str6==list[0]||(str6==list[1]&&list[1]!="")||(str6==list[2]&&list[1]==""))//pid or p_name
+        {
+            ui->list_process->setCurrentRow(row);
+            ui->button_kill->setEnabled(true);
+            flag = true;
+            break;
+        }
+    }
+    if(flag == false)
+        QMessageBox::warning(this,"Error","Can not find it, please check your input!", QMessageBox::Ok);
+    return;
+    //qDebug()<<list[0]<<list[1]<<list[2]<<list[3]<<list[4];
+}
+
+void TaskManager::on_button_kill_clicked()
+{
+//    //获得进程号
+//    QListWidgetItem *item = ui->listWidget_process->currentItem();
+//    QString pro = item->text();
+//    pro = pro.section("\t", 0, 0);
+//    system("kill " + pro.toLatin1());
+//    QMessageBox::warning(this, "kill", "该进程已被杀死!"), QMessageBox::OK);
+//    //回到进程信息tab表
+//    show_tabWidgetInfo(1);
+}
+// * @brief KNNDlg::on_deleteSpfiles_clicked删除选中的样本文件
+// */
+//void KNNDlg::on_deleteSpfiles_clicked()
+//{
+
+
+//    QList <QListWidgetItem*> items ;//注意 items是个Qlist 其中的元素是QListWidgetItem
+//    items=ui->SPList->selectedItems();
+//    if(items.size()==0)
+//        return;
+//    else
+//    {
+//        for(int i =0; i<items.size(); i++)//遍历所算的ITEM
+//        {
+//            QListWidgetItem*sel = items[i];
+//            int r = ui->SPList->row(sel);
+//            delete  ui->SPList->takeItem(r);
+
+//        }
+//        //下面代码可实现删除单选的item
+//        //    QListWidgetItem *item = ui->SPList->takeItem(ui->SPList->currentRow());
+//        //    delete item;
+//    }
+//}

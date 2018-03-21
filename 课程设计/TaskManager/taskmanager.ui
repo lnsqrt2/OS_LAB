@@ -26,7 +26,7 @@
     <enum>QTabWidget::Triangular</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="sys_info">
     <attribute name="title">
@@ -190,10 +190,10 @@
      <widget class="QLabel" name="label_cpu_name">
       <property name="geometry">
        <rect>
-        <x>190</x>
+        <x>100</x>
         <y>30</y>
-        <width>81</width>
-        <height>18</height>
+        <width>421</width>
+        <height>20</height>
        </rect>
       </property>
       <property name="text">
@@ -203,10 +203,10 @@
      <widget class="QLabel" name="label_cpu_hz">
       <property name="geometry">
        <rect>
-        <x>190</x>
+        <x>100</x>
         <y>70</y>
-        <width>81</width>
-        <height>18</height>
+        <width>391</width>
+        <height>20</height>
        </rect>
       </property>
       <property name="text">
@@ -224,16 +224,16 @@
       <rect>
        <x>10</x>
        <y>10</y>
-       <width>511</width>
-       <height>251</height>
+       <width>581</width>
+       <height>371</height>
       </rect>
      </property>
     </widget>
     <widget class="QPushButton" name="button_kill">
      <property name="geometry">
       <rect>
-       <x>390</x>
-       <y>280</y>
+       <x>480</x>
+       <y>400</y>
        <width>112</width>
        <height>34</height>
       </rect>
@@ -245,8 +245,8 @@
     <widget class="QLineEdit" name="edit_pid">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>280</y>
+       <x>40</x>
+       <y>400</y>
        <width>151</width>
        <height>25</height>
       </rect>
@@ -258,8 +258,8 @@
     <widget class="QPushButton" name="button_search">
      <property name="geometry">
       <rect>
-       <x>190</x>
-       <y>280</y>
+       <x>210</x>
+       <y>390</y>
        <width>112</width>
        <height>34</height>
       </rect>

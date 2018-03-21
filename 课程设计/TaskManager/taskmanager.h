@@ -22,9 +22,21 @@ public:
     QString boot_time;
     QString run_time;
     QString cpu_name;
-    QString cpu_version;
+    QString cpu_hz;
+    QString p_name;
+    QString pid;
+    QString ppid;
+    QString p_stat;
+    QString p_mem;
+    QString p_pri;
     QTimer *Timer;
     int tab_num;
+    int item_num;
+
+private slots:
+    void on_button_search_clicked();
+
+    void on_button_kill_clicked();
 
 private:
     Ui::TaskManager *ui;
