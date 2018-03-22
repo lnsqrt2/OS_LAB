@@ -12,8 +12,8 @@
 #include <QTabWidget>
 #include <QDateTime>
 #include <QDir>
-
-
+#include <QPainter>
+#define inf 0x3f3f3f3f
 TaskManager::TaskManager(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TaskManager)
@@ -22,18 +22,177 @@ TaskManager::TaskManager(QWidget *parent) :
     ui->button_kill->setEnabled(false);
     //show_info(1);//initial
     show_info(3);//initial
+    info[20]={0};
+    count = 0;
     item_num = 0;
     Timer = NULL;
     Timer = new QTimer(this);
     connect(Timer,&QTimer::timeout,this,&TaskManager::update_info);
+    Timer1 = NULL;
+    Timer1 = new QTimer(this);
+    connect(Timer1,&QTimer::timeout,this,&TaskManager::cpu_drawdone);
     connect(ui->tabWidget,&QTabWidget::currentChanged,this,&TaskManager::show_info);
-    Timer->start(1000);
+    Timer->start(100);
+    Timer1->start(7000);
+    ui->button_refcpu->setEnabled(false);
+    ui->tabWidget_2->installEventFilter(this);
 }
 
 TaskManager::~TaskManager()
 {
     delete ui;
 }
+
+void TaskManager::on_button_refcpu_clicked()
+{
+    ui->tabWidget_2->repaint();
+}
+
+void TaskManager::cpu_drawdone()
+{
+    ui->button_refcpu->setEnabled(true);
+    ui->label_cover->setVisible (false);
+    ui->tabWidget_2->repaint();
+}
+
+bool TaskManager::eventFilter(QObject *obj, QEvent *e)
+{
+    if(obj == ui->tabWidget_2)
+    {
+        if(e->type() == QEvent::Paint)
+        {
+            draw(ui->tabWidget_2->currentIndex());
+            return true;
+        }
+    }
+    return QWidget::eventFilter(obj,e);
+}
+
+void TaskManager::draw(int tab_index)
+{
+    int n=20;//n为数据个数
+    double sum=0;
+    double ave=0;
+    int _ma=0;//数组里的最大值
+    int _mi=inf;
+    int a[n]={0};
+
+    if(tab_index==0)//cpu image
+    {
+    }
+    if(tab_index==1)//mem image
+    {
+        qDebug()<<"ytkfg";
+    }
+    if(tab_index==2)//swap image
+    {
+        qDebug()<<"cp1234e";
+    }
+    QPainter painter(ui->tabWidget_2);
+    painter.setRenderHint(QPainter::Antialiasing, true);//设置反锯齿模式，好看一点
+
+    int pointx=85,pointy=375;//确定坐标轴起点坐标
+    int width=500-50,height=300-50;//确定坐标轴宽度跟高度
+    painter.drawRect(50,100,500,300);//外围的矩形
+    painter.drawLine(pointx,pointy,width+pointx,pointy);//坐标轴x宽度为width
+    painter.drawLine(pointx,pointy-height,pointx,pointy);//坐标轴y高度为height
+    srand(time(NULL));
+
+    //获得数据中最大值和最小值、平均数
+    for(int i=0;i<=n-1;i++)//
+    {
+        if(count>=40)
+            a[i]=info[i];
+        else
+            a[i]=0;
+        qDebug()<<a[i];
+    }
+
+    int maxpos=0,minpos=0;
+    for(int i=0;i<n;i++)
+    {
+        sum+=a[i];
+        if(a[i]>_ma){
+            _ma=a[i];
+            maxpos=i;
+        }
+        if(a[i]<_mi){
+            _mi=a[i];
+            minpos=i;
+        }
+    }
+    ave=sum/n;//平均数
+
+
+
+    double kx=(double)width/(n-1); //x轴的系数
+    double ky=(double)height/_ma;//y方向的比例系数
+    QPen pen,penPoint;
+    pen.setColor(Qt::black);
+    pen.setWidth(2);
+
+    penPoint.setColor(Qt::blue);
+    penPoint.setWidth(5);
+    for(int i=0;i<n-1;i++)
+    {
+        //由于y轴是倒着的，所以y轴坐标要pointy-a[i]*ky 其中ky为比例系数
+        painter.setPen(pen);//黑色笔用于连线
+        painter.drawLine(pointx+kx*i,pointy-a[i]*ky,pointx+kx*(i+1),pointy-a[i+1]*ky);
+        painter.setPen(penPoint);//蓝色的笔，用于标记各个点
+        painter.drawPoint(pointx+kx*i,pointy-a[i]*ky);
+    }
+    painter.drawPoint(pointx+kx*(n-1),pointy-a[n-1]*ky);//绘制最后一个点
+
+    //绘制平均线
+    QPen penAve;
+    penAve.setColor(Qt::red);//选择红色
+    penAve.setWidth(2);
+    penAve.setStyle(Qt::DotLine);//线条类型为虚线
+    painter.setPen(penAve);
+    painter.drawLine(pointx,pointy-ave*ky,pointx+width,pointy-ave*ky);
+
+    //绘制最大值和最小值
+    QPen penMaxMin;
+    penMaxMin.setColor(Qt::darkGreen);//暗绿色
+    painter.setPen(penMaxMin);
+    painter.drawText(pointx+kx*maxpos-kx,pointy-a[maxpos]*ky-5,
+                     "最大值"+QString::number(_ma));
+    painter.drawText(pointx+kx*minpos-kx,pointy-a[minpos]*ky+15,
+                     "最小值"+QString::number(_mi));
+
+    penMaxMin.setColor(Qt::red);
+    penMaxMin.setWidth(7);
+    painter.setPen(penMaxMin);
+    painter.drawPoint(pointx+kx*maxpos,pointy-a[maxpos]*ky);//标记最大值点
+    painter.drawPoint(pointx+kx*minpos,pointy-a[minpos]*ky);//标记最小值点
+
+
+    //绘制刻度线
+    QPen penDegree;
+    penDegree.setColor(Qt::black);
+    penDegree.setWidth(2);
+    painter.setPen(penDegree);
+    //画上x轴刻度线
+    for(int i=0;i<10;i++)//分成10份
+    {
+        //选取合适的坐标，绘制一段长度为4的直线，用于表示刻度
+        painter.drawLine(pointx+(i+1)*width/10,pointy,pointx+(i+1)*width/10,pointy+4);
+        painter.drawText(pointx+(i+0.65)*width/10,
+                         pointy+10,QString::number((int)((i+1)*((double)n/10))));
+    }
+    //y轴刻度线
+    double _maStep=(double)_ma/10;//y轴刻度间隔需根据最大值来表示
+    for(int i=0;i<10;i++)
+    {
+        //代码较长，但是掌握基本原理即可。
+        //主要就是确定一个位置，然后画一条短短的直线表示刻度。
+        painter.drawLine(pointx,pointy-(i+1)*height/10,
+                         pointx-4,pointy-(i+1)*height/10);
+        painter.drawText(pointx-20,pointy-(i+0.85)*height/10,
+                         QString::number((int)(_maStep*(i+1))));
+    }
+}
+
 
 void TaskManager::update_info()
 {
@@ -270,7 +429,7 @@ void TaskManager::show_info(int tab_num)
             }
             QByteArray line8 = file.readLine();
             QString str8 = (line8);
-            qDebug()<<str8;
+            //qDebug()<<str8;
             QStringList list8 = str8.split(" ");
             for(int i=0;i<=8;i++)
             {
@@ -279,7 +438,7 @@ void TaskManager::show_info(int tab_num)
             }
             QTime t1;
             t1.start();
-            while(t1.elapsed()<100)
+            while(t1.elapsed()<50)
                 QCoreApplication::processEvents();
         }
         file.close();
@@ -299,18 +458,25 @@ void TaskManager::show_info(int tab_num)
         cpu_rate = 100* (totalCpuTime-idleTime)/totalCpuTime;
         QString rate = QString::number(cpu_rate);
         rate = rate + " %";
-        //qDebug()<<rate;
+
         ui->label_cpurate->setText(rate);
         ui->label_cpurate_2->setText(rate);
 
-        //cpu_image
+        if(count<20)
+        {
 
-
-
-
-
-
-
+            info[count]=cpu_rate;
+            count++;
+        }
+        else
+        {
+            for(int i=0;i<20-1;i++)
+                info[i]=info[i+1];
+            info[20-1]=cpu_rate;
+        }
+        draw(0);
+        count++;
+        qDebug()<<info[0]<<info[1];
 
 
         // (9)内存和交换分区(swap)使用率的图形化显示(2分钟内的历史纪录曲线)

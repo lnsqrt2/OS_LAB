@@ -17,16 +17,16 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>100</y>
+     <y>90</y>
      <width>611</width>
-     <height>491</height>
+     <height>501</height>
     </rect>
    </property>
    <property name="tabShape">
     <enum>QTabWidget::Triangular</enum>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="sys_info">
     <attribute name="title">
@@ -273,225 +273,288 @@
     <attribute name="title">
      <string>性能</string>
     </attribute>
-    <widget class="QGroupBox" name="group_cpu">
+    <widget class="QTabWidget" name="tabWidget_2">
      <property name="geometry">
       <rect>
-       <x>30</x>
+       <x>20</x>
        <y>10</y>
-       <width>521</width>
-       <height>101</height>
+       <width>581</width>
+       <height>441</height>
       </rect>
      </property>
-     <property name="title">
-      <string>CPU使用率</string>
+     <property name="tabPosition">
+      <enum>QTabWidget::West</enum>
      </property>
-     <widget class="QLabel" name="label_cpurate">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>70</y>
-        <width>81</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>TextLabel</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_19">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>40</y>
-        <width>101</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>当前使用率：</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QGroupBox" name="group_mem">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>120</y>
-       <width>521</width>
-       <height>131</height>
-      </rect>
+     <property name="currentIndex">
+      <number>0</number>
      </property>
-     <property name="title">
-      <string>内存使用情况</string>
-     </property>
-     <widget class="QLabel" name="label_8">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>30</y>
-        <width>81</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>已用：</string>
-      </property>
+     <widget class="QWidget" name="cpu_paint">
+      <attribute name="title">
+       <string>CPU</string>
+      </attribute>
+      <widget class="QGroupBox" name="group_cpu">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>0</y>
+         <width>501</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>CPU使用率</string>
+       </property>
+       <widget class="QLabel" name="label_cpurate">
+        <property name="geometry">
+         <rect>
+          <x>110</x>
+          <y>30</y>
+          <width>81</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_19">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>30</y>
+          <width>101</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>当前使用率：</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="button_refcpu">
+        <property name="geometry">
+         <rect>
+          <x>400</x>
+          <y>10</y>
+          <width>99</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Reflesh</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QLabel" name="label_cover">
+       <property name="geometry">
+        <rect>
+         <x>110</x>
+         <y>130</y>
+         <width>321</width>
+         <height>211</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>../../../744931f1e13e52138a36cb51ae53dc214e1b257e.jpg</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
      </widget>
-     <widget class="QLabel" name="label_9">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>60</y>
-        <width>81</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>可用：</string>
-      </property>
+     <widget class="QWidget" name="mem_paint">
+      <attribute name="title">
+       <string>MEM</string>
+      </attribute>
+      <widget class="QGroupBox" name="group_mem">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>0</y>
+         <width>431</width>
+         <height>81</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>内存使用情况</string>
+       </property>
+       <widget class="QLabel" name="label_8">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>30</y>
+          <width>81</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>已用：</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_9">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>60</y>
+          <width>81</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>可用：</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_10">
+        <property name="geometry">
+         <rect>
+          <x>260</x>
+          <y>30</y>
+          <width>101</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>内存总大小</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_mem_used">
+        <property name="geometry">
+         <rect>
+          <x>80</x>
+          <y>30</y>
+          <width>81</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_mem_free">
+        <property name="geometry">
+         <rect>
+          <x>80</x>
+          <y>60</y>
+          <width>81</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_mem_total">
+        <property name="geometry">
+         <rect>
+          <x>260</x>
+          <y>60</y>
+          <width>81</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </widget>
      </widget>
-     <widget class="QLabel" name="label_10">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>90</y>
-        <width>101</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>内存总大小</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_mem_used">
-      <property name="geometry">
-       <rect>
-        <x>80</x>
-        <y>30</y>
-        <width>81</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>TextLabel</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_mem_free">
-      <property name="geometry">
-       <rect>
-        <x>80</x>
-        <y>60</y>
-        <width>81</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>TextLabel</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_mem_total">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>90</y>
-        <width>81</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>TextLabel</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QGroupBox" name="group_swap">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>280</y>
-       <width>521</width>
-       <height>131</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>交换分区使用情况</string>
-     </property>
-     <widget class="QLabel" name="label_13">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>30</y>
-        <width>81</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>已用：</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_14">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>60</y>
-        <width>81</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>可用：</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_15">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>90</y>
-        <width>101</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>内存总大小</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_swap_used">
-      <property name="geometry">
-       <rect>
-        <x>80</x>
-        <y>30</y>
-        <width>81</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>TextLabel</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_swap_free">
-      <property name="geometry">
-       <rect>
-        <x>80</x>
-        <y>60</y>
-        <width>81</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>TextLabel</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_swap_total">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>90</y>
-        <width>81</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>TextLabel</string>
-      </property>
+     <widget class="QWidget" name="swap_image">
+      <attribute name="title">
+       <string>SWAP</string>
+      </attribute>
+      <widget class="QGroupBox" name="group_swap">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>0</y>
+         <width>411</width>
+         <height>81</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>交换分区使用情况</string>
+       </property>
+       <widget class="QLabel" name="label_13">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>30</y>
+          <width>81</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>已用：</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_14">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>60</y>
+          <width>81</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>可用：</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_15">
+        <property name="geometry">
+         <rect>
+          <x>240</x>
+          <y>30</y>
+          <width>101</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>内存总大小</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_swap_used">
+        <property name="geometry">
+         <rect>
+          <x>80</x>
+          <y>30</y>
+          <width>81</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_swap_free">
+        <property name="geometry">
+         <rect>
+          <x>80</x>
+          <y>60</y>
+          <width>81</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_swap_total">
+        <property name="geometry">
+         <rect>
+          <x>240</x>
+          <y>60</y>
+          <width>81</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </widget>
      </widget>
     </widget>
    </widget>
