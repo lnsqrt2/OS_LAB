@@ -13,14 +13,15 @@
 #include <QDateTime>
 #include <QDir>
 
+
 TaskManager::TaskManager(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TaskManager)
 {
     ui->setupUi(this);
     ui->button_kill->setEnabled(false);
-    show_info(1);//initial
-    show_info(2);//initial
+    //show_info(1);//initial
+    show_info(3);//initial
     item_num = 0;
     Timer = NULL;
     Timer = new QTimer(this);
@@ -37,7 +38,8 @@ TaskManager::~TaskManager()
 void TaskManager::update_info()
 {
     tab_num = ui->tabWidget->currentIndex();
-    show_info(tab_num);
+    show_info(0);
+    show_info(2);
 
 }
 
@@ -47,7 +49,7 @@ void TaskManager::show_info(int tab_num)
     QString localTime = local.toString("yyyy-MM-dd\nhh:mm:ss");
     ui->label_time_2->setText(localTime);
 
-    if(tab_num == 1)//system info
+    if(tab_num == 0)//system info
     {
         // (1)获取并显示主机名
         // 功能(1)：/proc/sys/kernel/hostname
@@ -166,7 +168,7 @@ void TaskManager::show_info(int tab_num)
         //label_cpu_hz label_cpu_name label_pc_name label_boot_time label_run_time
     }   //label_pc_version
 
-    if(tab_num == 2)//process
+    if(tab_num == 1)//process
     {
         // (7)显示系统所有进程的一些信息，包括pid，ppid(parent pid)，占用内存大小，优先级等等
         // 功能(7)：/proc/(pid)/stat,
@@ -239,6 +241,82 @@ void TaskManager::show_info(int tab_num)
         }
         file.close();
     }
+    if(tab_num == 2)
+    {
+        // (8)cpu使用率的图形化显示(2分钟内的历史纪录曲线)
+        // 功能(8)：/proc/stat
+
+//        1、  采样两个足够短的时间间隔的Cpu快照，分别记作t1,t2，其中t1、t2的结构均为：
+//        (user、nice、system、idle、iowait、irq、softirq、stealstolen、guest)的9元组;
+//        2、  计算总的Cpu时间片totalCpuTime
+//        a)         把第一次的所有cpu使用情况求和，得到s1;
+//        b)         把第二次的所有cpu使用情况求和，得到s2;
+//        c)         s2 - s1得到这个时间间隔内的所有时间片，即totalCpuTime = j2 - j1 ;
+//        3、计算空闲时间idle
+//        idle对应第四列的数据，用第二次的idle - 第一次的idle即可
+//        idle=第二次的idle - 第一次的idle
+//        4、计算cpu使用率cpu_rate
+//        pcpu =100* (total-idle)/total
+        int cpu_info[2][9];
+        int s1 =0;
+        int s2 =0;
+        for(int t=0;t<=1;t++)
+        {
+            file.setFileName("/proc/stat");
+            if (!file.open(QIODevice::ReadOnly))
+            {
+                QMessageBox::warning(this,"Warning","File open fail!", QMessageBox::Ok);
+                return;
+            }
+            QByteArray line8 = file.readLine();
+            QString str8 = (line8);
+            qDebug()<<str8;
+            QStringList list8 = str8.split(" ");
+            for(int i=0;i<=8;i++)
+            {
+                cpu_info[t][i] = QString(list8[i+2]).toInt();//"cpu","","user"...
+                //qDebug()<<cpu_info[t][i];
+            }
+            QTime t1;
+            t1.start();
+            while(t1.elapsed()<100)
+                QCoreApplication::processEvents();
+        }
+        file.close();
+        for(int i=0;i<=8;i++)
+        {
+            s1 = s1 + cpu_info[0][i];
+        }
+        for(int i=0;i<=8;i++)
+        {
+            s2 = s2 + cpu_info[1][i];
+        }
+        //qDebug()<<s2<<s1;
+        //qDebug()<<cpu_info[1][3]<<cpu_info[0][3];
+        totalCpuTime = s2-s1;
+        idleTime = cpu_info[1][3]-cpu_info[0][3];
+        //qDebug()<<totalCpuTime<<idleTime;
+        cpu_rate = 100* (totalCpuTime-idleTime)/totalCpuTime;
+        QString rate = QString::number(cpu_rate);
+        rate = rate + " %";
+        //qDebug()<<rate;
+        ui->label_cpurate->setText(rate);
+        ui->label_cpurate_2->setText(rate);
+
+        //cpu_image
+
+
+
+
+
+
+
+
+
+        // (9)内存和交换分区(swap)使用率的图形化显示(2分钟内的历史纪录曲线)
+        // 功能(9)：/proc/meminfo
+    }
+
 }
 
 
@@ -274,36 +352,24 @@ void TaskManager::on_button_search_clicked()
 
 void TaskManager::on_button_kill_clicked()
 {
-//    //获得进程号
-//    QListWidgetItem *item = ui->listWidget_process->currentItem();
-//    QString pro = item->text();
-//    pro = pro.section("\t", 0, 0);
-//    system("kill " + pro.toLatin1());
-//    QMessageBox::warning(this, "kill", "该进程已被杀死!"), QMessageBox::OK);
-//    //回到进程信息tab表
-//    show_tabWidgetInfo(1);
+    QString itemlist = ui->list_process->currentItem()->text();
+    QStringList list = itemlist.split("\t");
+    QString item;
+    char*  ch;
+    if(list[1]!="")
+        item = list[1];
+    else
+        item = list[2];
+    //qDebug()<<item;
+    QString cmd_kill = QString("kill %1").arg(item);
+    //qDebug()<<cmd_kill;
+    QByteArray ba = cmd_kill.toLatin1();
+    ch=ba.data();
+    system(ch);
+    QMessageBox::warning(this,"Done","Killed!", QMessageBox::Ok);
+    QListWidgetItem *k_item = ui->list_process->takeItem(ui->list_process->currentRow());
+    delete k_item;
+    show_info(2);
 }
-// * @brief KNNDlg::on_deleteSpfiles_clicked删除选中的样本文件
-// */
-//void KNNDlg::on_deleteSpfiles_clicked()
-//{
+//system("/sbin/init 0"); //shutdown
 
-
-//    QList <QListWidgetItem*> items ;//注意 items是个Qlist 其中的元素是QListWidgetItem
-//    items=ui->SPList->selectedItems();
-//    if(items.size()==0)
-//        return;
-//    else
-//    {
-//        for(int i =0; i<items.size(); i++)//遍历所算的ITEM
-//        {
-//            QListWidgetItem*sel = items[i];
-//            int r = ui->SPList->row(sel);
-//            delete  ui->SPList->takeItem(r);
-
-//        }
-//        //下面代码可实现删除单选的item
-//        //    QListWidgetItem *item = ui->SPList->takeItem(ui->SPList->currentRow());
-//        //    delete item;
-//    }
-//}

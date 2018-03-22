@@ -17,6 +17,9 @@ public:
     explicit TaskManager(QWidget *parent = 0);
     ~TaskManager();
 
+    QImage cpu_image;
+    QImage mem_image;
+    QImage swap_image;
     QFile file;
     QString pc_name;
     QString boot_time;
@@ -32,6 +35,9 @@ public:
     QTimer *Timer;
     int tab_num;
     int item_num;
+    int totalCpuTime;
+    int idleTime;
+    int cpu_rate;
 
 private slots:
     void on_button_search_clicked();
