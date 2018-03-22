@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QFile>
 #include <QTime>
+#include <QMessageBox>
 
 namespace Ui {
 class TaskManager;
@@ -18,6 +19,7 @@ public:
     explicit TaskManager(QWidget *parent = 0);
     ~TaskManager();
 
+    QMessageBox MessageBox;
     QFile file;
     QString pc_name;
     QString boot_time;
@@ -56,6 +58,8 @@ private slots:
     void on_button_kill_clicked();
 
     void on_button_refcpu_clicked();
+
+    void on_button_off_clicked();
 
 private:
     Ui::TaskManager *ui;

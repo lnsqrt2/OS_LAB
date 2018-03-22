@@ -7,13 +7,14 @@
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>
+#include <QFileDialog>
 #include <QTime>
 #include <QTimer>
 #include <QTabWidget>
 #include <QDateTime>
 #include <QDir>
 #include <QPainter>
-#define inf 0x3f3f3f3f
+#include <QDialog>
 
 TaskManager::TaskManager(QWidget *parent) :
     QWidget(parent),
@@ -23,6 +24,7 @@ TaskManager::TaskManager(QWidget *parent) :
     ui->button_kill->setEnabled(false);
     //show_info(1);//initial
     show_info(3);//initial
+
     info_mem[20]={0};
     count_mem = 0;
     info_swap[20]={0};
@@ -39,7 +41,7 @@ TaskManager::TaskManager(QWidget *parent) :
     connect(ui->tabWidget,&QTabWidget::currentChanged,this,&TaskManager::show_info);
     Timer->start(100);
     Timer1->start(7000);
-    ui->button_refcpu->setEnabled(false);
+    //ui->button_refcpu->setEnabled(false);
     ui->tabWidget_2->installEventFilter(this);
 }
 
@@ -48,6 +50,7 @@ TaskManager::~TaskManager()
     delete ui;
 }
 
+
 void TaskManager::on_button_refcpu_clicked()
 {
     ui->tabWidget_2->repaint();
@@ -55,8 +58,11 @@ void TaskManager::on_button_refcpu_clicked()
 
 void TaskManager::cpu_drawdone()
 {
-    ui->button_refcpu->setEnabled(true);
+    //ui->button_refcpu->setEnabled(true);
     ui->label_cover->setVisible (false);
+    ui->label_cover_2->setVisible (false);
+    ui->label_cover_3->setVisible (false);
+    draw(ui->tabWidget_2->currentIndex());
     ui->tabWidget_2->repaint();
 }
 
@@ -79,7 +85,7 @@ void TaskManager::draw(int tab_index)
     double sum=0;
     double ave=0;
     int _ma=0;//数组里的最大值
-    int _mi=inf;
+    int _mi=0;
     int a[n]={0};
 
     if(tab_index==0)//cpu image
@@ -197,8 +203,7 @@ void TaskManager::draw(int tab_index)
     double _maStep=(double)_ma/10;//y轴刻度间隔需根据最大值来表示
     for(int i=0;i<10;i++)
     {
-        //代码较长，但是掌握基本原理即可。
-        //主要就是确定一个位置，然后画一条短短的直线表示刻度。
+        //确定一个位置，然后画一条短短的直线表示刻度。
         painter.drawLine(pointx,pointy-(i+1)*height/10,
                          pointx-4,pointy-(i+1)*height/10);
         painter.drawText(pointx-20,pointy-(i+0.85)*height/10,
@@ -266,7 +271,7 @@ void TaskManager::show_info(int tab_num)
 
         QString str3 = list2[1];
         str3 = str3.simplified();//clear \n
-        float run = str3.toFloat();
+        float run = str3.toFloat()/4;//4 core cpu
         int run_day = (run/86400);
         int run_hour = (run - run_day*86400)/3600;
         int run_minute = (run - run_day*86400-run_hour*3600)/60;
@@ -562,8 +567,8 @@ void TaskManager::show_info(int tab_num)
         //qDebug()<<MemTotal<<MemFree<<SwapTotal<<SwapFree;
         mem_rate = 100*(MemTotal-MemFree)/MemTotal;
         swap_rate = 100*(SwapTotal-SwapFree)/SwapTotal;
-        qDebug()<<MemTotal<<MemFree;
-        qDebug()<<mem_rate<<swap_rate;
+        //qDebug()<<MemTotal<<MemFree;
+        //qDebug()<<mem_rate<<swap_rate;
         if(count_mem<20)
         {
             info_mem[count_mem]=mem_rate;
@@ -645,5 +650,21 @@ void TaskManager::on_button_kill_clicked()
     delete k_item;
     show_info(2);
 }
-//system("/sbin/init 0"); //shutdown
 
+// (14)关机功能
+void TaskManager::on_button_off_clicked()
+{
+    int ret = QMessageBox::question(this,"WARNING","Sure To Shutdown?",
+                                    QMessageBox::Ok,
+                                    QMessageBox::Cancel);
+    switch(ret)
+    {
+    case QMessageBox::Ok:
+        system("/sbin/init 0"); //shutdown
+        //qDebug()<<"Ok";
+        break;
+    case QMessageBox::Cancel:
+        qDebug()<<"Canceled";
+        break;
+    }
+}

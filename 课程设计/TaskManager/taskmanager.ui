@@ -18,7 +18,7 @@
     <rect>
      <x>20</x>
      <y>90</y>
-     <width>611</width>
+     <width>631</width>
      <height>501</height>
     </rect>
    </property>
@@ -26,7 +26,7 @@
     <enum>QTabWidget::Triangular</enum>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="sys_info">
     <attribute name="title">
@@ -286,7 +286,7 @@
       <enum>QTabWidget::West</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="cpu_paint">
       <attribute name="title">
@@ -330,37 +330,24 @@
          <string>当前使用率：</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="button_refcpu">
-        <property name="geometry">
-         <rect>
-          <x>400</x>
-          <y>10</y>
-          <width>99</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Reflesh</string>
-        </property>
-       </widget>
       </widget>
       <widget class="QLabel" name="label_cover">
        <property name="geometry">
         <rect>
-         <x>110</x>
-         <y>130</y>
-         <width>321</width>
-         <height>211</height>
+         <x>130</x>
+         <y>120</y>
+         <width>301</width>
+         <height>181</height>
         </rect>
        </property>
        <property name="text">
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>../../../744931f1e13e52138a36cb51ae53dc214e1b257e.jpg</pixmap>
+        <pixmap>../../../wait_image.png</pixmap>
        </property>
        <property name="scaledContents">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
       </widget>
      </widget>
@@ -459,6 +446,25 @@
         </property>
        </widget>
       </widget>
+      <widget class="QLabel" name="label_cover_2">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>120</y>
+         <width>301</width>
+         <height>181</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>../../../wait_image.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>false</bool>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="swap_image">
       <attribute name="title">
@@ -505,7 +511,7 @@
        <widget class="QLabel" name="label_15">
         <property name="geometry">
          <rect>
-          <x>240</x>
+          <x>250</x>
           <y>30</y>
           <width>101</width>
           <height>18</height>
@@ -544,7 +550,7 @@
        <widget class="QLabel" name="label_swap_total">
         <property name="geometry">
          <rect>
-          <x>240</x>
+          <x>250</x>
           <y>60</y>
           <width>81</width>
           <height>18</height>
@@ -554,6 +560,25 @@
          <string>TextLabel</string>
         </property>
        </widget>
+      </widget>
+      <widget class="QLabel" name="label_cover_3">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>120</y>
+         <width>301</width>
+         <height>181</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>../../../wait_image.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>false</bool>
+       </property>
       </widget>
      </widget>
     </widget>
@@ -565,14 +590,66 @@
     <widget class="QLabel" name="label_7">
      <property name="geometry">
       <rect>
-       <x>100</x>
-       <y>120</y>
+       <x>150</x>
+       <y>140</y>
        <width>281</width>
-       <height>18</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="text">
       <string>获取帮助请联系630212894@qq.com</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_16">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>30</y>
+       <width>141</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>CS1503 班</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_17">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>60</y>
+       <width>141</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>U201514559</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_18">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>90</y>
+       <width>141</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>周铭昊</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_20">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>120</y>
+       <width>91</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>2018/3/22</string>
      </property>
     </widget>
    </widget>
@@ -580,21 +657,21 @@
   <widget class="QPushButton" name="button_off">
    <property name="geometry">
     <rect>
-     <x>510</x>
-     <y>80</y>
-     <width>112</width>
-     <height>34</height>
+     <x>521</x>
+     <y>70</y>
+     <width>111</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>关机</string>
+    <string>Shutdown</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_21">
    <property name="geometry">
     <rect>
-     <x>13</x>
-     <y>13</y>
+     <x>20</x>
+     <y>10</y>
      <width>90</width>
      <height>18</height>
     </rect>
@@ -620,7 +697,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>40</y>
+     <y>30</y>
      <width>81</width>
      <height>41</height>
     </rect>
@@ -645,7 +722,7 @@
   <widget class="QLabel" name="label_12">
    <property name="geometry">
     <rect>
-     <x>520</x>
+     <x>510</x>
      <y>10</y>
      <width>90</width>
      <height>18</height>
@@ -671,7 +748,7 @@
   <widget class="QLabel" name="label_mem_free_2">
    <property name="geometry">
     <rect>
-     <x>520</x>
+     <x>510</x>
      <y>40</y>
      <width>81</width>
      <height>18</height>
@@ -684,7 +761,7 @@
   <widget class="QLabel" name="label_22">
    <property name="geometry">
     <rect>
-     <x>170</x>
+     <x>160</x>
      <y>10</y>
      <width>99</width>
      <height>18</height>
@@ -692,6 +769,19 @@
    </property>
    <property name="text">
     <string>CPU使用率：</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="button_refcpu">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>70</y>
+     <width>101</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Reflesh</string>
    </property>
   </widget>
  </widget>
