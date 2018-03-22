@@ -53,6 +53,7 @@ TaskManager::~TaskManager()
 
 void TaskManager::on_button_refcpu_clicked()
 {
+    show_info(1);
     ui->tabWidget_2->repaint();
 }
 
