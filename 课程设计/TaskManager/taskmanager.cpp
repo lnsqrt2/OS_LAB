@@ -14,6 +14,7 @@
 #include <QDir>
 #include <QPainter>
 #define inf 0x3f3f3f3f
+
 TaskManager::TaskManager(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TaskManager)
@@ -22,6 +23,10 @@ TaskManager::TaskManager(QWidget *parent) :
     ui->button_kill->setEnabled(false);
     //show_info(1);//initial
     show_info(3);//initial
+    info_mem[20]={0};
+    count_mem = 0;
+    info_swap[20]={0};
+    count_swap = 0;
     info[20]={0};
     count = 0;
     item_num = 0;
@@ -79,14 +84,36 @@ void TaskManager::draw(int tab_index)
 
     if(tab_index==0)//cpu image
     {
+        for(int i=0;i<=n-1;i++)
+        {
+            if(count>=40)
+                a[i]=info[i];
+            else
+                a[i]=0;
+            //qDebug()<<a[i];
+        }
     }
     if(tab_index==1)//mem image
     {
-        qDebug()<<"ytkfg";
+        for(int i=0;i<=n-1;i++)
+        {
+            if(count_mem>=40)
+                a[i]=info_mem[i];
+            else
+                a[i]=0;
+            //qDebug()<<a[i];
+        }
     }
     if(tab_index==2)//swap image
     {
-        qDebug()<<"cp1234e";
+        for(int i=0;i<=n-1;i++)
+        {
+            if(count_swap>=40)
+                a[i]=info_swap[i];
+            else
+                a[i]=0;
+            //qDebug()<<a[i];
+        }
     }
     QPainter painter(ui->tabWidget_2);
     painter.setRenderHint(QPainter::Antialiasing, true);//设置反锯齿模式，好看一点
@@ -99,15 +126,6 @@ void TaskManager::draw(int tab_index)
     srand(time(NULL));
 
     //获得数据中最大值和最小值、平均数
-    for(int i=0;i<=n-1;i++)//
-    {
-        if(count>=40)
-            a[i]=info[i];
-        else
-            a[i]=0;
-        qDebug()<<a[i];
-    }
-
     int maxpos=0,minpos=0;
     for(int i=0;i<n;i++)
     {
@@ -122,9 +140,6 @@ void TaskManager::draw(int tab_index)
         }
     }
     ave=sum/n;//平均数
-
-
-
     double kx=(double)width/(n-1); //x轴的系数
     double ky=(double)height/_ma;//y方向的比例系数
     QPen pen,penPoint;
@@ -165,8 +180,6 @@ void TaskManager::draw(int tab_index)
     painter.setPen(penMaxMin);
     painter.drawPoint(pointx+kx*maxpos,pointy-a[maxpos]*ky);//标记最大值点
     painter.drawPoint(pointx+kx*minpos,pointy-a[minpos]*ky);//标记最小值点
-
-
     //绘制刻度线
     QPen penDegree;
     penDegree.setColor(Qt::black);
@@ -458,13 +471,11 @@ void TaskManager::show_info(int tab_num)
         cpu_rate = 100* (totalCpuTime-idleTime)/totalCpuTime;
         QString rate = QString::number(cpu_rate);
         rate = rate + " %";
-
         ui->label_cpurate->setText(rate);
         ui->label_cpurate_2->setText(rate);
 
         if(count<20)
         {
-
             info[count]=cpu_rate;
             count++;
         }
@@ -474,13 +485,110 @@ void TaskManager::show_info(int tab_num)
                 info[i]=info[i+1];
             info[20-1]=cpu_rate;
         }
-        draw(0);
         count++;
-        qDebug()<<info[0]<<info[1];
-
+        //qDebug()<<info[0]<<info[1];
 
         // (9)内存和交换分区(swap)使用率的图形化显示(2分钟内的历史纪录曲线)
         // 功能(9)：/proc/meminfo
+        file.setFileName("/proc/meminfo");
+        if (!file.open(QIODevice::ReadOnly))
+        {
+            QMessageBox::warning(this,"Warning","File open fail!", QMessageBox::Ok);
+            return;
+        }
+        QString str9;
+        QString str_MemTotal,str_MemFree,str_SwapTotal,str_SwapFree;
+        for(int i=0;i<16;i++)
+        {
+            str9 = file.readLine();
+            if(i==0)
+                str_MemTotal = str9;//MemTotal:        4012980 kB\n
+            if(i==1)
+                str_MemFree = str9;//MemFree:          727200 kB\n
+            if(i==14)
+                str_SwapTotal = str9;//SwapTotal:       1046524 kB\n
+            if(i==15)
+                str_SwapFree = str9;//SwapFree:         836348 kB\n
+        }
+        //qDebug()<<str_MemTotal<<str_MemFree<<str_SwapTotal<<str_SwapFree;
+        QStringList list_MemTotal = str_MemTotal.split(":");
+        str_MemTotal = list_MemTotal[1];
+        str_MemTotal = str_MemTotal.simplified();
+
+        ui->label_mem_total->setText(str_MemTotal);
+
+        list_MemTotal = str_MemTotal.split(" ");
+        str_MemTotal = list_MemTotal[0];
+        MemTotal = str_MemTotal.toInt();
+
+        QStringList list_MemFree = str_MemFree.split(":");
+        str_MemFree = list_MemFree[1];
+        str_MemFree = str_MemFree.simplified();
+
+        ui->label_mem_free->setText(str_MemFree);
+        ui->label_mem_free_2->setText(str_MemFree);
+
+        list_MemFree = str_MemFree.split(" ");
+        str_MemFree = list_MemFree[0];
+        MemFree = str_MemFree.toInt();
+
+        QStringList list_SwapTotal = str_SwapTotal.split(":");
+        str_SwapTotal = list_SwapTotal[1];
+        str_SwapTotal = str_SwapTotal.simplified();
+
+        ui->label_swap_total->setText(str_SwapTotal);
+
+        list_SwapTotal = str_SwapTotal.split(" ");
+        str_SwapTotal = list_SwapTotal[0];
+        SwapTotal = str_SwapTotal.toInt();
+
+        QStringList list_SwapFree = str_SwapFree.split(":");
+        str_SwapFree = list_SwapFree[1];
+        str_SwapFree = str_SwapFree.simplified();
+
+        ui->label_swap_free->setText(str_SwapFree);
+        list_SwapFree = str_SwapFree.split(" ");
+        str_SwapFree = list_SwapFree[0];
+        SwapFree = str_SwapFree.toInt();
+
+        QString str_MemUsed = QString::number(MemTotal-MemFree);
+        str_MemUsed = QString("%1 KB").arg(str_MemUsed);
+        ui->label_mem_used->setText(str_MemUsed);
+        ui->label_mem_used_2->setText(str_MemUsed);
+        QString str_SwapUsed = QString::number(SwapTotal-SwapFree);
+        str_SwapUsed = QString("%1 KB").arg(str_SwapUsed);
+        ui->label_swap_used->setText(str_SwapUsed);
+
+        //qDebug()<<MemTotal<<MemFree<<SwapTotal<<SwapFree;
+        mem_rate = 100*(MemTotal-MemFree)/MemTotal;
+        swap_rate = 100*(SwapTotal-SwapFree)/SwapTotal;
+        qDebug()<<MemTotal<<MemFree;
+        qDebug()<<mem_rate<<swap_rate;
+        if(count_mem<20)
+        {
+            info_mem[count_mem]=mem_rate;
+            count_mem++;
+        }
+        else
+        {
+            for(int i=0;i<20-1;i++)
+                info_mem[i]=info_mem[i+1];
+            info_mem[20-1]=mem_rate;
+        }
+        count_mem++;
+
+        if(count_swap<20)
+        {
+            info_swap[count_swap]=swap_rate;
+            count_swap++;
+        }
+        else
+        {
+            for(int i=0;i<20-1;i++)
+                info_swap[i]=info_swap[i+1];
+            info_swap[20-1]=swap_rate;
+        }
+        count_swap++;
     }
 
 }

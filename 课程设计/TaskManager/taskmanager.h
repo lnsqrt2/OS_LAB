@@ -37,8 +37,18 @@ public:
     int totalCpuTime;
     int idleTime;
     int cpu_rate;
+    int mem_rate;
+    int swap_rate;
     int info[20];
     int count;
+    int MemTotal;
+    int MemFree;
+    int SwapTotal;
+    int SwapFree;
+    int info_mem[20];
+    int count_mem;
+    int info_swap[20];
+    int count_swap;
 
 private slots:
     void on_button_search_clicked();
