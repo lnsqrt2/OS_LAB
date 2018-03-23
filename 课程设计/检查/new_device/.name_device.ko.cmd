@@ -1,0 +1,1 @@
+cmd_/home/lumos/new_device/name_device.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/lumos/new_device/name_device.ko /home/lumos/new_device/name_device.o /home/lumos/new_device/name_device.mod.o ;  true
